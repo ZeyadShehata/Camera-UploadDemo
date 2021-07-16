@@ -29,12 +29,16 @@ class ProfileFragment: Fragment() {
                 val dialog = Dialog(requireContext())
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
                 val dialogBinding = DialogOptionsBinding.inflate(LayoutInflater.from(dialog.context))
+
                 dialog.setContentView(dialogBinding.root)
+                dialogBinding.profileFragment = this
                 dialog.show()
             }
         })
+
         return binding.root
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

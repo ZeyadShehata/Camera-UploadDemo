@@ -11,6 +11,8 @@ class ProfileViewModel() : ViewModel(){
     fun setAddButtonClicked(){
         _addButtonClicked.value= true
     }
+
+
   /*  fun makeSourceDialog(){
         val dialog = Dialog(getApplication<Application>().applicationContext)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
