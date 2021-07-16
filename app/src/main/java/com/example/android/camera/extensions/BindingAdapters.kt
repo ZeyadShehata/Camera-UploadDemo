@@ -21,4 +21,14 @@ fun Button.openCamera(fragment: ProfileFragment){
         }
     }
 }
+@BindingAdapter("image_from_gallery")
+fun Button.openCGalleru(fragment: ProfileFragment){
+    val pickPictureIntent = Intent(Intent.ACTION_PICK)
+    pickPictureIntent.type = "image/*"
+    try {
+        fragment.startActivityForResult(pickPictureIntent, 1)
 
+    } catch (e: ActivityNotFoundException) {
+        // display error state to the user
+    }
+}
