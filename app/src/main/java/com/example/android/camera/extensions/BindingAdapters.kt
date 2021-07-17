@@ -48,7 +48,7 @@ fun Button.openGallery(fragment: ProfileFragment) {
 
 @BindingAdapter("imageSrc")
 fun ImageView.bindImage(newResponseRec: Bitmap) {
-
+    //optimize(Zek) change [newResponseRec] to nullable and use this?.let { to set Image Bitmap}
     this.setImageBitmap(newResponseRec)
 
 
