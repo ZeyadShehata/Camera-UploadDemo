@@ -41,7 +41,7 @@ class ProfileFragment : Fragment() {
         val drawablePic = requireContext().getDrawable(R.drawable.ic_baseline_account_circle_24)
         if (drawablePic != null) {
             if (viewModel.imageBitmap.value == null)
-                viewModel.setImageBmap(drawablePic.toBitmap())
+                viewModel.setOgBmap(drawablePic.toBitmap())
         }
         //optimize(Zek): refactor (extract the below region to a function)
         //region refactor extract this to a function that creates a dialog or move it into a dialog manager singleton
