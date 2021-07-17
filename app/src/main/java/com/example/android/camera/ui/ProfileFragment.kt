@@ -2,6 +2,8 @@ package com.example.android.camera.ui
 
 import android.app.Dialog
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -67,13 +69,19 @@ class ProfileFragment : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         Log.d("sss", "resultCode.toString()")
-        if (requestCode == 1 && resultCode == AppCompatActivity.RESULT_OK && data != null) {
-            Log.d("sss", resultCode.toString())
-            Log.d("sss", AppCompatActivity.RESULT_OK.toString())
-            /*val inputStream = requireContext().contentResolver.openInputStream(data.data!!)
+        if (resultCode == AppCompatActivity.RESULT_OK && data != null) {
+            if(requestCode == 1) {
+                Log.d("sss", resultCode.toString())
+                Log.d("sss", AppCompatActivity.RESULT_OK.toString())
+                val inputStream = requireContext().contentResolver.openInputStream(data.data!!)
 
-            val imageBitmap = BitmapFactory.decodeStream(inputStream)
-            viewModel.setImageBmap(imageBitmap)*/
+                val imageBitmap = BitmapFactory.decodeStream(inputStream)
+                viewModel.setImageBmap(imageBitmap)
+            }
+            else if (requestCode == 2){
+                val imageBitmap = data.extras?.get("data") as Bitmap
+                viewModel.setImageBmap(imageBitmap)
+            }
         }
 
     }

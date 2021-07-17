@@ -18,8 +18,8 @@ fun Button.openCamera(fragment: ProfileFragment) {
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 
         try {
-            Log.d("sss","ricooo")
-            fragment.startActivityForResult(takePictureIntent, 1)
+            Log.d("sss",takePictureIntent.toString())
+            fragment.startActivityForResult(takePictureIntent, 2)
             if(fragment.dialog != null)
                 fragment.dialog.dismiss()
         } catch (e: ActivityNotFoundException) {
