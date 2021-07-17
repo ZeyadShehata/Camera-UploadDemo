@@ -40,7 +40,7 @@ class ProfileFragment : Fragment() {
         val drawablePic = requireContext().getDrawable(R.drawable.ic_baseline_account_circle_24)
         if (drawablePic != null) {
             if (viewModel.imageBitmap.value == null)
-                viewModel.setImageBmap(drawablePic.toBitmap())
+                viewModel.setOgBmap(drawablePic.toBitmap())
         }
         dialog = Dialog(requireContext())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
