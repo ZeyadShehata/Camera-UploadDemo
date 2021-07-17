@@ -1,12 +1,15 @@
 package com.example.android.camera.network
 
-import retrofit2.http.GET
+import retrofit2.http.Body
+import retrofit2.http.POST
 import retrofit2.http.Query
+import java.io.File
 
 interface FileUploadService {
-    @GET("upload")
-    suspend fun UploadPhoto(
+    @POST("upload")
+    suspend fun uploadPhoto(
         @Query("Content-Disposition:") method: String,
-        @Query("filename") name: String
+        @Query("filename") name: String,
+        @Body pic: File
     )
 }
