@@ -26,7 +26,9 @@
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_baseline_account_circle_24" />
+
+            app:imageSrc="@{profileViewModel.imageBitmap}"
+            />
 
         <EditText
             android:id="@+id/editTextTextPersonName"
@@ -48,7 +50,7 @@
             android:id="@+id/imageView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="@{()->profileViewModel.setAddButtonClicked()}"
+            android:onClick="@{()->profileViewModel.setAddButtonClicked(true)}"
             app:layout_constraintBottom_toBottomOf="@+id/imageView"
             app:layout_constraintEnd_toEndOf="@+id/imageView"
             app:layout_constraintHorizontal_bias="1.0"
