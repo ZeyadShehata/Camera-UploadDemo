@@ -4,11 +4,14 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.graphics.Bitmap
 import android.provider.MediaStore
-import android.util.Log
+import android.text.Editable
+import android.text.TextWatcher
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import com.example.android.camera.ui.ProfileFragment
+import com.example.android.camera.ui.ProfileViewModel
 
 const val CAMERA_REQUEST_CODE = 1
 
@@ -18,7 +21,6 @@ fun Button.openCamera(fragment: ProfileFragment) {
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 
         try {
-            Log.d("sss",takePictureIntent.toString())
             fragment.startActivityForResult(takePictureIntent, 2)
             if(fragment.dialog != null)
                 fragment.dialog.dismiss()
@@ -53,4 +55,24 @@ fun ImageView.bindImage(newResponseRec: Bitmap) {
 
 
 }
+
+@BindingAdapter("fileName")
+fun EditText.setFileName(viewModel: ProfileViewModel){
+    this.addTextChangedListener(object : TextWatcher {
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+        }
+
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+        }
+
+        override fun afterTextChanged(s: Editable?) {
+            viewModel.setFileName(s.toString())
+
+        }
+
+    })
+}
+
 
