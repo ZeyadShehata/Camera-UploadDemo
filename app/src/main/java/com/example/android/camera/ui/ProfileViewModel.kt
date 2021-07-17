@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.android.camera.network.FileAPI
 
 class ProfileViewModel() : ViewModel() {
     private var _addButtonClicked = MutableLiveData<Boolean>()
@@ -20,7 +21,9 @@ class ProfileViewModel() : ViewModel() {
     }
 init {
     Log.d("sss",imageBitmap.value.toString())
+    
 }
+
     fun setImageBmap(nBitmap: Bitmap) {
         _imageBitmap.value = nBitmap
         Log.d("sss", imageBitmap.value.toString())
