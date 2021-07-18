@@ -35,8 +35,10 @@ class ProfileViewModel() : ViewModel() {
     private var _uploadSuccess = MutableStateFlow(false)
     val uploadSuccess: StateFlow<Boolean> = _uploadSuccess
 
-    private var _uploadFail = MutableLiveData<Boolean>()
-    val uploadFail: LiveData<Boolean> = _uploadFail
+    private var _uploadFail = MutableStateFlow(false)
+    val uploadFail:StateFlow<Boolean>  = _uploadFail
+    /*private var _uploadFail = MutableLiveData<Boolean>()
+    val uploadFail: LiveData<Boolean> = _uploadFail*/
 
     init {
 

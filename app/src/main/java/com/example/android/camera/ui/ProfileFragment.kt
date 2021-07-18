@@ -131,8 +131,20 @@ class ProfileFragment : Fragment() {
 
             }
         }
+        val parentFragment = this
+        lifecycleScope.launch {
+            viewModel.uploadFail.collect { success ->
+                if (success) {
+                    val snack =
+                        Snackbar.make(parentFragment.requireView(), R.string.fail, Snackbar.LENGTH_LONG)
+                    snack.setAction(R.string.retry, MyUndoListener(viewModel))
 
-        viewModel.uploadFail.observe(viewLifecycleOwner, { clicked ->
+                    snack.show()
+                }
+
+            }
+        }
+       /* viewModel.uploadFail.observe(viewLifecycleOwner, { clicked ->
             if (clicked) {
 
                 val snack =
@@ -143,7 +155,7 @@ class ProfileFragment : Fragment() {
 
 
             }
-        })
+        })*/
     }
 
 
