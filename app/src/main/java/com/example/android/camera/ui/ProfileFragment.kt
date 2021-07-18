@@ -4,13 +4,12 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.RequiresApi
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -25,22 +24,25 @@ class ProfileFragment : Fragment() {
     private val binding
         get() = _binding!!
 
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         binding.profileViewModel = viewModel
         binding.lifecycleOwner = this.viewLifecycleOwner
-        DialogManager.setDialogBinding(requireContext(),viewModel)
-        setObservers()
+        DialogManager.setDialogBinding(requireContext(), viewModel)
+
 
         return binding.root
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+
         if (resultCode == AppCompatActivity.RESULT_OK && data != null) {
             if (requestCode == IMAGE_FROM_GALLERY_REQUEST) {
                 val inputStream = requireContext().contentResolver.openInputStream(data.data!!)
@@ -99,11 +101,24 @@ class ProfileFragment : Fragment() {
                 viewModel.setGalleryButtonClicked(false)
             }
         })
+        viewModel.uploadSuccess.observe(viewLifecycleOwner, { clicked ->
+            if (clicked) {
+
+                Toast.makeText(
+                    activity,
+                    "Upload was successful",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+
+            }
+        })
 
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setObservers()
     }
 }
