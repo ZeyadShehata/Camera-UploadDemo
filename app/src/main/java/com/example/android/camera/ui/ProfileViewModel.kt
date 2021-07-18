@@ -7,8 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.android.camera.network.FileAPI
 import kotlinx.coroutines.launch
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.RequestBody
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.ByteArrayOutputStream
 
 class ProfileViewModel() : ViewModel() {
@@ -66,8 +66,8 @@ class ProfileViewModel() : ViewModel() {
                     "--FILE DATA--",
                     fileName.value + ".bmp",
 
+                    bitmapdata.toRequestBody("image/*".toMediaType())
 
-                    RequestBody.create("image/*".toMediaTypeOrNull(), bitmapdata)
                 )
 
 

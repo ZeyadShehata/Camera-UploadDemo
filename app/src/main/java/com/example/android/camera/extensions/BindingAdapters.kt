@@ -22,7 +22,7 @@ fun Button.openCamera(fragment: ProfileFragment) {
 
         try {
             fragment.startActivityForResult(takePictureIntent, 2)
-            if(fragment.dialog != null)
+            if (fragment.dialog != null)
                 fragment.dialog.dismiss()
         } catch (e: ActivityNotFoundException) {
             // display error state to the user
@@ -38,7 +38,7 @@ fun Button.openGallery(fragment: ProfileFragment) {
         pickPictureIntent.type = "image/*"
         try {
             fragment.startActivityForResult(pickPictureIntent, 1)
-            if(fragment.dialog != null)
+            if (fragment.dialog != null)
                 fragment.dialog.dismiss()
 
         } catch (e: ActivityNotFoundException) {
@@ -49,15 +49,16 @@ fun Button.openGallery(fragment: ProfileFragment) {
 }
 
 @BindingAdapter("imageSrc")
-fun ImageView.bindImage(newResponseRec: Bitmap) {
-
-    this.setImageBitmap(newResponseRec)
+fun ImageView.bindImage(newResponseRec: Bitmap?) {
+    newResponseRec?.let {
+        this.setImageBitmap(newResponseRec)
+    }
 
 
 }
 
 @BindingAdapter("fileName")
-fun EditText.setFileName(viewModel: ProfileViewModel){
+fun EditText.setFileName(viewModel: ProfileViewModel) {
     this.addTextChangedListener(object : TextWatcher {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 

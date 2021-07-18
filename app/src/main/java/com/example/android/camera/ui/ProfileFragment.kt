@@ -13,10 +13,8 @@ import android.view.ViewGroup
 import android.view.Window
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.example.android.camera.R
 import com.example.android.camera.databinding.DialogOptionsBinding
 import com.example.android.camera.databinding.FragmentProfileBinding
 
@@ -37,11 +35,6 @@ class ProfileFragment : Fragment() {
 
         binding.profileViewModel = viewModel
         binding.lifecycleOwner = this.viewLifecycleOwner
-        val drawablePic = requireContext().getDrawable(R.drawable.ic_baseline_account_circle_24)
-        if (drawablePic != null) {
-            if (viewModel.imageBitmap.value == null)
-                viewModel.setOgBmap(drawablePic.toBitmap())
-        }
         dialog = Dialog(requireContext())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         val dialogBinding =
