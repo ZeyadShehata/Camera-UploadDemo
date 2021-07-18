@@ -5,7 +5,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,7 +30,6 @@ class ProfileFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
-
         binding.profileViewModel = viewModel
         binding.lifecycleOwner = this.viewLifecycleOwner
         DialogManager.setDialogBinding(this)
@@ -41,13 +39,9 @@ class ProfileFragment : Fragment() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        Log.d("sss", "resultCode.toString()")
         if (resultCode == AppCompatActivity.RESULT_OK && data != null) {
             if (requestCode == IMAGE_FROM_GALLERY_REQUEST) {
-                Log.d("sss", resultCode.toString())
-                Log.d("sss", AppCompatActivity.RESULT_OK.toString())
                 val inputStream = requireContext().contentResolver.openInputStream(data.data!!)
-
                 val imageBitmap = BitmapFactory.decodeStream(inputStream)
                 viewModel.setImageBmap(imageBitmap)
             } else if (requestCode == IMAGE_FROM_CAMERA_REQUEST) {
@@ -64,7 +58,6 @@ class ProfileFragment : Fragment() {
 
                 if (getActivity() != null) {
                     if (isAdded) {
-                        Log.d("sss", "acttttt")
                         DialogManager.showDialog()
                     }
 

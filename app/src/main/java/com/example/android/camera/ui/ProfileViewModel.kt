@@ -46,7 +46,7 @@ class ProfileViewModel() : ViewModel() {
 
         viewModelScope.launch {
 
-            if (imageBitmap.value != null && _fileName.value!="") {
+            if (imageBitmap.value != null && _fileName.value != "") {
                 val bos = ByteArrayOutputStream()
 
                 imageBitmap.value!!.compress(Bitmap.CompressFormat.PNG, 90, bos)
@@ -61,7 +61,6 @@ class ProfileViewModel() : ViewModel() {
                     "FileData",
                     "--FILE DATA--",
                     fileName.value + ".bmp",
-
                     bitmapdata.toRequestBody("image/*".toMediaType())
 
                 )
