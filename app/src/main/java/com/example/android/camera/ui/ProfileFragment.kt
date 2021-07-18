@@ -17,6 +17,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.android.camera.databinding.DialogOptionsBinding
 import com.example.android.camera.databinding.FragmentProfileBinding
+import com.example.android.camera.utils.IMAGE_FROM_CAMERA_REQUEST
+import com.example.android.camera.utils.IMAGE_FROM_GALLERY_REQUEST
 
 class ProfileFragment : Fragment() {
     private var _binding: FragmentProfileBinding? = null
@@ -51,14 +53,14 @@ class ProfileFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         Log.d("sss", "resultCode.toString()")
         if (resultCode == AppCompatActivity.RESULT_OK && data != null) {
-            if (requestCode == 1) {
+            if (requestCode == IMAGE_FROM_GALLERY_REQUEST) {
                 Log.d("sss", resultCode.toString())
                 Log.d("sss", AppCompatActivity.RESULT_OK.toString())
                 val inputStream = requireContext().contentResolver.openInputStream(data.data!!)
 
                 val imageBitmap = BitmapFactory.decodeStream(inputStream)
                 viewModel.setImageBmap(imageBitmap)
-            } else if (requestCode == 2) {
+            } else if (requestCode == IMAGE_FROM_CAMERA_REQUEST) {
                 val imageBitmap = data.extras?.get("data") as Bitmap
                 viewModel.setImageBmap(imageBitmap)
             }

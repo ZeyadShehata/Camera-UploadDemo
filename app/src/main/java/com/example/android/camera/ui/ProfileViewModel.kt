@@ -33,10 +33,6 @@ class ProfileViewModel() : ViewModel() {
         _fileName.value = ""
     }
 
-    fun setOgBmap(oBitmap: Bitmap) {
-        ogBitmap = oBitmap
-        setImageBmap(ogBitmap)
-    }
 
     fun setImageBmap(nBitmap: Bitmap) {
         _imageBitmap.value = nBitmap

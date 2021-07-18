@@ -12,8 +12,9 @@ import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import com.example.android.camera.ui.ProfileFragment
 import com.example.android.camera.ui.ProfileViewModel
+import com.example.android.camera.utils.IMAGE_FROM_CAMERA_REQUEST
+import com.example.android.camera.utils.IMAGE_FROM_GALLERY_REQUEST
 
-const val CAMERA_REQUEST_CODE = 1
 
 @BindingAdapter("image_from_cam_fragment")
 fun Button.openCamera(fragment: ProfileFragment) {
@@ -21,7 +22,7 @@ fun Button.openCamera(fragment: ProfileFragment) {
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 
         try {
-            fragment.startActivityForResult(takePictureIntent, 2)
+            fragment.startActivityForResult(takePictureIntent, IMAGE_FROM_CAMERA_REQUEST)
             if (fragment.dialog != null)
                 fragment.dialog.dismiss()
         } catch (e: ActivityNotFoundException) {
@@ -37,7 +38,7 @@ fun Button.openGallery(fragment: ProfileFragment) {
         val pickPictureIntent = Intent(Intent.ACTION_PICK)
         pickPictureIntent.type = "image/*"
         try {
-            fragment.startActivityForResult(pickPictureIntent, 1)
+            fragment.startActivityForResult(pickPictureIntent, IMAGE_FROM_GALLERY_REQUEST)
             if (fragment.dialog != null)
                 fragment.dialog.dismiss()
 
