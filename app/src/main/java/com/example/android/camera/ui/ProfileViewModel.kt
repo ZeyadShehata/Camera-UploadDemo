@@ -21,9 +21,8 @@ class ProfileViewModel() : ViewModel() {
     val imageBitmap: LiveData<Bitmap>
         get() = _imageBitmap
 
-    val _fileName = MutableLiveData<String>()
-    val fileName: LiveData<String>
-        get() = _fileName
+    val _fileName = MutableStateFlow("")
+    val fileName: StateFlow<String> = _fileName
 
 
     private var _cameraButtonClicked = MutableStateFlow(false)
@@ -37,8 +36,7 @@ class ProfileViewModel() : ViewModel() {
 
     private var _uploadFail = MutableStateFlow(false)
     val uploadFail:StateFlow<Boolean>  = _uploadFail
-    /*private var _uploadFail = MutableLiveData<Boolean>()
-    val uploadFail: LiveData<Boolean> = _uploadFail*/
+
 
     init {
 

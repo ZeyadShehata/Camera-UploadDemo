@@ -136,7 +136,11 @@ class ProfileFragment : Fragment() {
             viewModel.uploadFail.collect { success ->
                 if (success) {
                     val snack =
-                        Snackbar.make(parentFragment.requireView(), R.string.fail, Snackbar.LENGTH_LONG)
+                        Snackbar.make(
+                            parentFragment.requireView(),
+                            R.string.fail,
+                            Snackbar.LENGTH_LONG
+                        )
                     snack.setAction(R.string.retry, MyUndoListener(viewModel))
 
                     snack.show()
@@ -144,18 +148,7 @@ class ProfileFragment : Fragment() {
 
             }
         }
-       /* viewModel.uploadFail.observe(viewLifecycleOwner, { clicked ->
-            if (clicked) {
 
-                val snack =
-                    Snackbar.make(this.requireView(), R.string.fail, Snackbar.LENGTH_LONG)
-                snack.setAction(R.string.retry, MyUndoListener(viewModel))
-
-                snack.show()
-
-
-            }
-        })*/
     }
 
 
