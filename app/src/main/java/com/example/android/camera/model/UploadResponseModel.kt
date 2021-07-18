@@ -1,4 +1,4 @@
-package com.example.android.camera.extensions.model
+package com.example.android.camera.model
 
 import com.squareup.moshi.Json
 

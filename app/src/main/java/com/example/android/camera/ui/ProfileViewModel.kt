@@ -16,23 +16,38 @@ class ProfileViewModel() : ViewModel() {
     val addButtonClicked: LiveData<Boolean>
         get() = _addButtonClicked
     private var _imageBitmap = MutableLiveData<Bitmap>()
-    private lateinit var ogBitmap: Bitmap
+
     val imageBitmap: LiveData<Bitmap>
         get() = _imageBitmap
 
     val _fileName = MutableLiveData<String>()
     val fileName: LiveData<String>
         get() = _fileName
+    private var _cameraButtonClicked = MutableLiveData<Boolean>()
+    val cameraButtonClicked: LiveData<Boolean>
+        get() = _cameraButtonClicked
 
-    fun setAddButtonClicked(bool: Boolean) {
-        _addButtonClicked.value = bool
-    }
+    private var _galleryButtonClicked = MutableLiveData<Boolean>()
+    val galleryButtonClicked: LiveData<Boolean>
+        get() = _galleryButtonClicked
 
     init {
 
         _fileName.value = ""
     }
 
+
+
+    fun setAddButtonClicked(bool: Boolean) {
+        _addButtonClicked.value = bool
+    }
+
+    fun setCameraButtonClicked(bool: Boolean) {
+        _cameraButtonClicked.value = bool
+    }
+    fun setGalleryButtonClicked(bool: Boolean) {
+        _galleryButtonClicked.value = bool
+    }
 
     fun setImageBmap(nBitmap: Bitmap) {
         _imageBitmap.value = nBitmap

@@ -1,6 +1,6 @@
 package com.example.android.camera.network
 
-import com.example.android.camera.extensions.model.UploadResponseModel
+import com.example.android.camera.model.UploadResponseModel
 import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.POST

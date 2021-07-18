@@ -1,10 +1,12 @@
 package com.example.android.camera.ui
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,7 +34,7 @@ class ProfileFragment : Fragment() {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         binding.profileViewModel = viewModel
         binding.lifecycleOwner = this.viewLifecycleOwner
-        DialogManager.setDialogBinding(this)
+        DialogManager.setDialogBinding(requireContext(),viewModel)
         setObservers()
 
         return binding.root
@@ -65,6 +67,39 @@ class ProfileFragment : Fragment() {
 
             }
         })
+        viewModel.cameraButtonClicked.observe(viewLifecycleOwner, { clicked ->
+            if (clicked) {
+
+                val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+
+                try {
+                    startActivityForResult(takePictureIntent, IMAGE_FROM_CAMERA_REQUEST)
+                    DialogManager.dismissDialog()
+                } catch (e: ActivityNotFoundException) {
+                    // display error state to the user
+                }
+                viewModel.setCameraButtonClicked(false)
+
+            }
+        })
+
+        viewModel.galleryButtonClicked.observe(viewLifecycleOwner, { clicked ->
+            if (clicked) {
+
+                val pickPictureIntent = Intent(Intent.ACTION_PICK)
+                pickPictureIntent.type = "image/*"
+                try {
+                    startActivityForResult(pickPictureIntent, IMAGE_FROM_GALLERY_REQUEST)
+                    DialogManager.dismissDialog()
+
+                } catch (e: ActivityNotFoundException) {
+
+
+                }
+                viewModel.setGalleryButtonClicked(false)
+            }
+        })
+
     }
 
 
