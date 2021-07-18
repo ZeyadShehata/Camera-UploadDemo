@@ -1,5 +1,6 @@
 package com.example.android.camera.ui
 
+import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.graphics.Bitmap
@@ -13,9 +14,12 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.example.android.camera.R
 import com.example.android.camera.databinding.FragmentProfileBinding
 import com.example.android.camera.utils.IMAGE_FROM_CAMERA_REQUEST
 import com.example.android.camera.utils.IMAGE_FROM_GALLERY_REQUEST
+import com.google.android.material.snackbar.Snackbar
+
 
 class ProfileFragment : Fragment() {
     private var _binding: FragmentProfileBinding? = null
@@ -56,6 +60,7 @@ class ProfileFragment : Fragment() {
 
     }
 
+    @SuppressLint("UseRequireInsteadOfGet")
     private fun setObservers() {
         viewModel.addButtonClicked.observe(viewLifecycleOwner, { clicked ->
             if (clicked) {
@@ -113,12 +118,28 @@ class ProfileFragment : Fragment() {
 
             }
         })
+        viewModel.uploadFail.observe(viewLifecycleOwner, { clicked ->
+            if (clicked) {
 
+                val snack = Snackbar.make(this.requireView(), R.string.fail, Snackbar.LENGTH_LONG)
+                snack.setAction(R.string.retry, MyUndoListener(viewModel))
+
+                snack.show()
+
+
+            }
+        })
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setObservers()
+    }
+}
+class MyUndoListener(val viewModel: ProfileViewModel) : View.OnClickListener {
+
+    override fun onClick(v: View) {
+        viewModel.uploadPicture()
     }
 }
