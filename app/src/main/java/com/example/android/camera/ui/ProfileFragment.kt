@@ -21,7 +21,7 @@ import com.example.android.camera.databinding.FragmentProfileBinding
 class ProfileFragment : Fragment() {
     private var _binding: FragmentProfileBinding? = null
     private val viewModel: ProfileViewModel by viewModels()
-     lateinit var dialog: Dialog
+    lateinit var dialog: Dialog
     private val binding
         get() = _binding!!
 
@@ -43,19 +43,7 @@ class ProfileFragment : Fragment() {
         dialog.setContentView(dialogBinding.root)
         dialogBinding.profileFragment = this
         dialogBinding.profileViewModel = viewModel
-        viewModel.addButtonClicked.observe(viewLifecycleOwner, { clicked ->
-            if (clicked) {
-
-                if (getActivity() != null) {
-                    if(isAdded) {
-                        Log.d("sss","acttttt")
-                        dialog.show()
-                    }
-
-                }
-
-            }
-        })
+        setObservers()
 
         return binding.root
     }
@@ -63,15 +51,14 @@ class ProfileFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         Log.d("sss", "resultCode.toString()")
         if (resultCode == AppCompatActivity.RESULT_OK && data != null) {
-            if(requestCode == 1) {
+            if (requestCode == 1) {
                 Log.d("sss", resultCode.toString())
                 Log.d("sss", AppCompatActivity.RESULT_OK.toString())
                 val inputStream = requireContext().contentResolver.openInputStream(data.data!!)
 
                 val imageBitmap = BitmapFactory.decodeStream(inputStream)
                 viewModel.setImageBmap(imageBitmap)
-            }
-            else if (requestCode == 2){
+            } else if (requestCode == 2) {
                 val imageBitmap = data.extras?.get("data") as Bitmap
                 viewModel.setImageBmap(imageBitmap)
             }
@@ -79,6 +66,21 @@ class ProfileFragment : Fragment() {
 
     }
 
+    private fun setObservers() {
+        viewModel.addButtonClicked.observe(viewLifecycleOwner, { clicked ->
+            if (clicked) {
+
+                if (getActivity() != null) {
+                    if (isAdded) {
+                        Log.d("sss", "acttttt")
+                        dialog.show()
+                    }
+
+                }
+
+            }
+        })
+    }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
