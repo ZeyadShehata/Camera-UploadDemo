@@ -37,7 +37,8 @@ class ProfileViewModel() : ViewModel() {
     private var _uploadFail = MutableStateFlow(false)
     val uploadFail:StateFlow<Boolean>  = _uploadFail
 
-
+    private var _missingData = MutableStateFlow(false)
+    val missingData:StateFlow<Boolean>  = _missingData
     init {
 
         _fileName.value = ""
@@ -51,7 +52,9 @@ class ProfileViewModel() : ViewModel() {
     fun setAddButtonClicked(bool: Boolean) {
         _addButtonClicked.value = bool
     }
-
+    fun setMissingData(bool: Boolean) {
+        _missingData.value = bool
+    }
     fun setCameraButtonClicked(bool: Boolean) {
 
         _cameraButtonClicked.value = bool
@@ -83,6 +86,7 @@ class ProfileViewModel() : ViewModel() {
         viewModelScope.launch {
 
             if (imageBitmap.value != null && _fileName.value != "") {
+                setMissingData(false)
                 val bos = ByteArrayOutputStream()
                 imageBitmap.value!!.compress(Bitmap.CompressFormat.PNG, 90, bos)
                 val bitmapdata = bos.toByteArray()
@@ -104,6 +108,10 @@ class ProfileViewModel() : ViewModel() {
                     setUploadFail(true)
                 }
 
+
+            }
+            else{
+                setMissingData(true)
             }
         }
     }

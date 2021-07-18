@@ -148,7 +148,19 @@ class ProfileFragment : Fragment() {
 
             }
         }
+        lifecycleScope.launch {
+            viewModel.missingData.collect { success ->
+                if (success) {
+                    Toast.makeText(
+                        activity,
+                        "Missing File name or Image!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    viewModel.setMissingData(false)
+                }
 
+            }
+        }
     }
 
 
