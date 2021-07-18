@@ -10,6 +10,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
+import com.example.android.camera.ui.DialogManager
 import com.example.android.camera.ui.ProfileFragment
 import com.example.android.camera.ui.ProfileViewModel
 import com.example.android.camera.utils.IMAGE_FROM_CAMERA_REQUEST
@@ -23,8 +24,7 @@ fun Button.openCamera(fragment: ProfileFragment) {
 
         try {
             fragment.startActivityForResult(takePictureIntent, IMAGE_FROM_CAMERA_REQUEST)
-            if (fragment.dialog != null)
-                fragment.dialog.dismiss()
+            DialogManager.dismissDialog()
         } catch (e: ActivityNotFoundException) {
             // display error state to the user
         }
@@ -39,8 +39,7 @@ fun Button.openGallery(fragment: ProfileFragment) {
         pickPictureIntent.type = "image/*"
         try {
             fragment.startActivityForResult(pickPictureIntent, IMAGE_FROM_GALLERY_REQUEST)
-            if (fragment.dialog != null)
-                fragment.dialog.dismiss()
+            DialogManager.dismissDialog()
 
         } catch (e: ActivityNotFoundException) {
 

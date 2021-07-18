@@ -8,9 +8,7 @@
         <variable
             name="profileFragment"
             type="com.example.android.camera.ui.ProfileFragment" />
-        <variable
-            name="profileViewModel"
-            type="com.example.android.camera.ui.ProfileViewModel" />
+        
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

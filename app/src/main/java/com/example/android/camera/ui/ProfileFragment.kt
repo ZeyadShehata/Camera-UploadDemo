@@ -1,6 +1,5 @@
 package com.example.android.camera.ui
 
-import android.app.Dialog
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -10,12 +9,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.example.android.camera.databinding.DialogOptionsBinding
 import com.example.android.camera.databinding.FragmentProfileBinding
 import com.example.android.camera.utils.IMAGE_FROM_CAMERA_REQUEST
 import com.example.android.camera.utils.IMAGE_FROM_GALLERY_REQUEST
@@ -23,7 +20,7 @@ import com.example.android.camera.utils.IMAGE_FROM_GALLERY_REQUEST
 class ProfileFragment : Fragment() {
     private var _binding: FragmentProfileBinding? = null
     private val viewModel: ProfileViewModel by viewModels()
-    lateinit var dialog: Dialog
+
     private val binding
         get() = _binding!!
 
@@ -37,14 +34,7 @@ class ProfileFragment : Fragment() {
 
         binding.profileViewModel = viewModel
         binding.lifecycleOwner = this.viewLifecycleOwner
-        dialog = Dialog(requireContext())
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        val dialogBinding =
-            DialogOptionsBinding.inflate(LayoutInflater.from(dialog.context))
-
-        dialog.setContentView(dialogBinding.root)
-        dialogBinding.profileFragment = this
-        dialogBinding.profileViewModel = viewModel
+        DialogManager.setDialogBinding(this)
         setObservers()
 
         return binding.root
@@ -75,7 +65,7 @@ class ProfileFragment : Fragment() {
                 if (getActivity() != null) {
                     if (isAdded) {
                         Log.d("sss", "acttttt")
-                        dialog.show()
+                        DialogManager.showDialog()
                     }
 
                 }
