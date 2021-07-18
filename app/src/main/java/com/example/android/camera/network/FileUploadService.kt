@@ -1,6 +1,7 @@
 package com.example.android.camera.network
 
-import android.graphics.Bitmap
+import com.example.android.camera.extensions.model.UploadResponseModel
+import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.POST
 import retrofit2.http.Query
@@ -9,7 +10,12 @@ interface FileUploadService {
     @POST("upload")
     suspend fun uploadPhoto(
         @Query("Content-Disposition:") method: String,
-        @Query("filename") name: String,
-        @Body pic: Bitmap?
-    )
+        @Query("Content-Type")contentType: String,
+        @Query("boundary")boundary: String,
+        @Query("Content-Disposition:") method2: String,
+        @Query("name")partName: String,
+        @Query("Content-Type")contentType2: String,
+        @Query("filename") name2: String,
+        @Body pic: RequestBody
+    ): UploadResponseModel
 }

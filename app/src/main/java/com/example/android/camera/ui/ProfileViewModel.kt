@@ -1,13 +1,15 @@
 package com.example.android.camera.ui
 
 import android.graphics.Bitmap
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.android.camera.network.FileAPI
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody
+import java.io.ByteArrayOutputStream
 
 class ProfileViewModel() : ViewModel() {
     private var _addButtonClicked = MutableLiveData<Boolean>()
@@ -38,7 +40,6 @@ class ProfileViewModel() : ViewModel() {
 
     fun setImageBmap(nBitmap: Bitmap) {
         _imageBitmap.value = nBitmap
-        Log.d("sss", imageBitmap.value.toString())
     }
 
     fun setFileName(string: String) {
@@ -46,15 +47,31 @@ class ProfileViewModel() : ViewModel() {
     }
 
     fun uploadPicture() {
+
         viewModelScope.launch {
 
-            if (imageBitmap.value != null && imageBitmap.value != ogBitmap)
+            if (imageBitmap.value != null && imageBitmap.value != ogBitmap) {
+                val bos = ByteArrayOutputStream()
 
-                FileAPI.retrofitService.uploadPhoto(
+                imageBitmap.value!!.compress(Bitmap.CompressFormat.PNG, 90, bos)
+                val bitmapdata = bos.toByteArray()
+
+
+                val result = FileAPI.retrofitService.uploadPhoto(
                     "inline",
+                    "multipart/form-data",
+                    "------7MA4YWxkTrZu0gW",
+                    "attachment",
+                    "FileData",
+                    "--FILE DATA--",
                     fileName.value + ".bmp",
-                    _imageBitmap.value
+
+
+                    RequestBody.create("image/*".toMediaTypeOrNull(), bitmapdata)
                 )
+
+
+            }
         }
     }
 

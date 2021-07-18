@@ -58,7 +58,7 @@ class ProfileFragment : Fragment() {
                         Log.d("sss","acttttt")
                         dialog.show()
                     }
-                    // if fragment use getActivity().isFinishing() or isAdded() method
+
                 }
 
             }
