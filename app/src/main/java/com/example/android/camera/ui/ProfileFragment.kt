@@ -1,6 +1,5 @@
 package com.example.android.camera.ui
 
-import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.graphics.Bitmap
@@ -14,11 +13,14 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.example.android.camera.R
 import com.example.android.camera.databinding.FragmentProfileBinding
 import com.example.android.camera.utils.IMAGE_FROM_CAMERA_REQUEST
 import com.example.android.camera.utils.IMAGE_FROM_GALLERY_REQUEST
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 
 class ProfileFragment : Fragment() {
@@ -60,68 +62,81 @@ class ProfileFragment : Fragment() {
 
     }
 
-    @SuppressLint("UseRequireInsteadOfGet")
+
     private fun setObservers() {
-        viewModel.addButtonClicked.observe(viewLifecycleOwner, { clicked ->
-            if (clicked) {
+        lifecycleScope.launch {
+            viewModel.addButtonClicked.collect { clicked ->
+                if (clicked == true && activity != null) {
+                    DialogManager.showDialog()
+                    viewModel.setAddButtonClicked(false)
+                }
+            }
+        }
 
-                if (getActivity() != null) {
-                    if (isAdded) {
-                        DialogManager.showDialog()
+
+
+
+        lifecycleScope.launch {
+            viewModel.cameraButtonClicked.collect { cam ->
+                if (cam) {
+
+                    val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+
+                    try {
+                        startActivityForResult(takePictureIntent, IMAGE_FROM_CAMERA_REQUEST)
+                        DialogManager.dismissDialog()
+                    } catch (e: ActivityNotFoundException) {
+                        // display error state to the user
                     }
+                    viewModel.setCameraButtonClicked(false)
+                }
+            }
+
+        }
+
+        lifecycleScope.launch {
+            viewModel.galleryButtonClicked.collect { gallery ->
+                if (gallery) {
+
+                    val pickPictureIntent = Intent(Intent.ACTION_PICK)
+                    pickPictureIntent.type = "image/*"
+                    try {
+                        startActivityForResult(
+                            pickPictureIntent,
+                            IMAGE_FROM_GALLERY_REQUEST
+                        )
+                        DialogManager.dismissDialog()
+
+                    } catch (e: ActivityNotFoundException) {
+
+
+                    }
+                    viewModel.setGalleryButtonClicked(false)
+                }
+            }
+        }
+
+
+
+        lifecycleScope.launch {
+            viewModel.uploadSuccess.collect { success ->
+                if (success) {
+                    Toast.makeText(
+                        activity,
+                        "Upload was successful",
+                        Toast.LENGTH_SHORT
+                    ).show()
 
                 }
 
             }
-        })
-        viewModel.cameraButtonClicked.observe(viewLifecycleOwner, { clicked ->
-            if (clicked) {
+        }
 
-                val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-
-                try {
-                    startActivityForResult(takePictureIntent, IMAGE_FROM_CAMERA_REQUEST)
-                    DialogManager.dismissDialog()
-                } catch (e: ActivityNotFoundException) {
-                    // display error state to the user
-                }
-                viewModel.setCameraButtonClicked(false)
-
-            }
-        })
-
-        viewModel.galleryButtonClicked.observe(viewLifecycleOwner, { clicked ->
-            if (clicked) {
-
-                val pickPictureIntent = Intent(Intent.ACTION_PICK)
-                pickPictureIntent.type = "image/*"
-                try {
-                    startActivityForResult(pickPictureIntent, IMAGE_FROM_GALLERY_REQUEST)
-                    DialogManager.dismissDialog()
-
-                } catch (e: ActivityNotFoundException) {
-
-
-                }
-                viewModel.setGalleryButtonClicked(false)
-            }
-        })
-        viewModel.uploadSuccess.observe(viewLifecycleOwner, { clicked ->
-            if (clicked) {
-
-                Toast.makeText(
-                    activity,
-                    "Upload was successful",
-                    Toast.LENGTH_SHORT
-                ).show()
-
-
-            }
-        })
         viewModel.uploadFail.observe(viewLifecycleOwner, { clicked ->
             if (clicked) {
 
-                val snack = Snackbar.make(this.requireView(), R.string.fail, Snackbar.LENGTH_LONG)
+                val snack =
+                    Snackbar.make(this.requireView(), R.string.fail, Snackbar.LENGTH_LONG)
                 snack.setAction(R.string.retry, MyUndoListener(viewModel))
 
                 snack.show()
@@ -137,6 +152,7 @@ class ProfileFragment : Fragment() {
         setObservers()
     }
 }
+
 class MyUndoListener(val viewModel: ProfileViewModel) : View.OnClickListener {
 
     override fun onClick(v: View) {
