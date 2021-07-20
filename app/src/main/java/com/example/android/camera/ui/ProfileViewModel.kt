@@ -40,10 +40,7 @@ class ProfileViewModel() : ViewModel() {
     init {
 
         _fileName.value = ""
-        viewModelScope.launch {
-            _addButtonClicked.value = false
 
-        }
         }
 
 
@@ -85,12 +82,14 @@ class ProfileViewModel() : ViewModel() {
 
             if (imageBitmap.value != null && _fileName.value != "") {
                 setMissingData(false)
+
                 val bos = ByteArrayOutputStream()
                 imageBitmap.value!!.compress(Bitmap.CompressFormat.PNG, 90, bos)
                 val bitmapdata = bos.toByteArray()
                 val result = repo.getPhoto(fileName.value,bitmapdata)
 
                 if (result) {
+                    setUploadFail(false)
                     setUploadSuccesss(true)
                 } else {
                     setUploadFail(true)

@@ -43,7 +43,7 @@ class ProfileFragment : Fragment() {
         binding.lifecycleOwner = this.viewLifecycleOwner
         DialogManager.setDialogBinding(requireContext(), viewModel)
 
-
+        setObservers()
         return binding.root
     }
 
@@ -126,18 +126,19 @@ class ProfileFragment : Fragment() {
                         "Upload was successful",
                         Toast.LENGTH_SHORT
                     ).show()
-
+                    viewModel.setUploadSuccesss(false)
                 }
 
             }
         }
-        val parentFragment = this
+        val fragment = this
         lifecycleScope.launch {
             viewModel.uploadFail.collect { success ->
                 if (success) {
+
                     val snack =
                         Snackbar.make(
-                            parentFragment.requireView(),
+                            fragment.requireView(),
                             R.string.fail,
                             Snackbar.LENGTH_LONG
                         )
@@ -166,13 +167,14 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setObservers()
+
     }
 }
 
 class MyUndoListener(val viewModel: ProfileViewModel) : View.OnClickListener {
 
     override fun onClick(v: View) {
+        /*viewModel.setUploadFail(false)*/
         viewModel.uploadPicture()
     }
 }
