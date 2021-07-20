@@ -5,12 +5,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.android.camera.network.FileAPI
+import com.example.android.camera.network.FileUploadRepo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.ByteArrayOutputStream
 
 class ProfileViewModel() : ViewModel() {
@@ -23,7 +21,7 @@ class ProfileViewModel() : ViewModel() {
 
     val _fileName = MutableStateFlow("")
     val fileName: StateFlow<String> = _fileName
-
+    private val repo = FileUploadRepo()
 
     private var _cameraButtonClicked = MutableStateFlow(false)
     val cameraButtonClicked: StateFlow<Boolean> = _cameraButtonClicked
@@ -90,19 +88,9 @@ class ProfileViewModel() : ViewModel() {
                 val bos = ByteArrayOutputStream()
                 imageBitmap.value!!.compress(Bitmap.CompressFormat.PNG, 90, bos)
                 val bitmapdata = bos.toByteArray()
+                val result = repo.getPhoto(fileName.value,bitmapdata)
 
-                val result = FileAPI.retrofitService.uploadPhoto(
-                    "inline",
-                    "multipart/form-data",
-                    "------7MA4YWxkTrZu0gW",
-                    "attachment",
-                    "FileData",
-                    "--FILE DATA--",
-                    fileName.value + ".bmp",
-                    bitmapdata.toRequestBody("image/*".toMediaType())
-
-                )
-                if (result.isSuccessful) {
+                if (result) {
                     setUploadSuccesss(true)
                 } else {
                     setUploadFail(true)
