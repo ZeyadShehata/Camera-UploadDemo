@@ -93,6 +93,7 @@ class ProfileViewModel() : ViewModel() {
                     setUploadSuccesss(true)
                 } else {
                     setUploadFail(true)
+
                 }
 
 

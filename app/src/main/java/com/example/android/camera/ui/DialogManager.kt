@@ -3,11 +3,16 @@ package com.example.android.camera.ui
 import android.app.Dialog
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.Window
+import com.example.android.camera.R
 import com.example.android.camera.databinding.DialogOptionsBinding
+import com.google.android.material.snackbar.Snackbar
 
 object DialogManager {
     private lateinit var dialog: Dialog
+    private  var snack : Snackbar? = null
+    private var snackbarDismissed = false
     fun setDialogBinding(context: Context, profileViewModel: ProfileViewModel){
         dialog = Dialog(context)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -23,5 +28,39 @@ object DialogManager {
     }
     fun dismissDialog(){
         dialog.dismiss()
+    }
+    fun createSnackBar(v: View, s: Int, vm:ProfileViewModel){
+        snack =
+            Snackbar.make(
+                v,
+                s,
+                Snackbar.LENGTH_LONG
+            )
+        snack?.setAction(R.string.retry, MyUndoListener(vm))
+
+
+    }
+    fun showSnackBar(){
+        snack?.show()
+        snackbarDismissed = false
+    }
+    fun dismissSncakBar(){
+        snack?.dismiss()
+        snackbarDismissed = true
+    }
+    fun isSnackBarDismissed(): Boolean {
+        if(snackbarDismissed && snack!= null)
+            return true
+        else
+            return false
+    }
+    fun isSncakBarShown(): Boolean {
+        if(snack != null){
+            if(snack?.isShown == true)
+                return true
+            else
+                return false
+        }
+        return false
     }
 }

@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,7 +19,6 @@ import com.example.android.camera.R
 import com.example.android.camera.databinding.FragmentProfileBinding
 import com.example.android.camera.utils.IMAGE_FROM_CAMERA_REQUEST
 import com.example.android.camera.utils.IMAGE_FROM_GALLERY_REQUEST
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -42,8 +42,14 @@ class ProfileFragment : Fragment() {
         binding.profileViewModel = viewModel
         binding.lifecycleOwner = this.viewLifecycleOwner
         DialogManager.setDialogBinding(requireContext(), viewModel)
-
         setObservers()
+
+        if(DialogManager.isSnackBarDismissed())
+            DialogManager.showSnackBar()
+
+
+
+
         return binding.root
     }
 
@@ -135,16 +141,10 @@ class ProfileFragment : Fragment() {
         lifecycleScope.launch {
             viewModel.uploadFail.collect { success ->
                 if (success) {
-
-                    val snack =
-                        Snackbar.make(
-                            fragment.requireView(),
-                            R.string.fail,
-                            Snackbar.LENGTH_LONG
-                        )
-                    snack.setAction(R.string.retry, MyUndoListener(viewModel))
-
-                    snack.show()
+                    DialogManager.createSnackBar(fragment.requireView(), R.string.fail,viewModel)
+                    DialogManager.showSnackBar()
+                    Log.d("sss","upload Failed")
+                    viewModel.setUploadFail(false)
                 }
 
             }
@@ -165,6 +165,14 @@ class ProfileFragment : Fragment() {
     }
 
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        if(DialogManager.isSncakBarShown()) {
+            DialogManager.dismissSncakBar()
+        }
+
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -174,7 +182,7 @@ class ProfileFragment : Fragment() {
 class MyUndoListener(val viewModel: ProfileViewModel) : View.OnClickListener {
 
     override fun onClick(v: View) {
-        /*viewModel.setUploadFail(false)*/
+        viewModel.setUploadFail(false)
         viewModel.uploadPicture()
     }
 }
