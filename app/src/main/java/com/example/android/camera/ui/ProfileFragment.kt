@@ -6,7 +6,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -143,7 +142,6 @@ class ProfileFragment : Fragment() {
                 if (success) {
                     DialogManager.createSnackBar(fragment.requireView(), R.string.fail,viewModel)
                     DialogManager.showSnackBar()
-                    Log.d("sss","upload Failed")
                     viewModel.setUploadFail(false)
                 }
 
@@ -160,6 +158,16 @@ class ProfileFragment : Fragment() {
                     viewModel.setMissingData(false)
                 }
 
+            }
+        }
+        lifecycleScope.launch {
+            viewModel.waitingForReply.collect { success ->
+                if (success) {
+                    binding.button3.setEnabled(false)
+
+                }
+                else
+                    binding.button3.setEnabled(true)
             }
         }
     }

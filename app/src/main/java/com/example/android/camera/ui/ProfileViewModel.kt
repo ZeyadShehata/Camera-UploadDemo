@@ -12,8 +12,7 @@ import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 
 class ProfileViewModel() : ViewModel() {
-    private var _addButtonClicked = MutableStateFlow(false)
-    val addButtonClicked: StateFlow<Boolean> = _addButtonClicked
+    private val repo = FileUploadRepo()
 
     private var _imageBitmap = MutableLiveData<Bitmap>()
     val imageBitmap: LiveData<Bitmap>
@@ -21,7 +20,10 @@ class ProfileViewModel() : ViewModel() {
 
     val _fileName = MutableStateFlow("")
     val fileName: StateFlow<String> = _fileName
-    private val repo = FileUploadRepo()
+
+
+    private var _addButtonClicked = MutableStateFlow(false)
+    val addButtonClicked: StateFlow<Boolean> = _addButtonClicked
 
     private var _cameraButtonClicked = MutableStateFlow(false)
     val cameraButtonClicked: StateFlow<Boolean> = _cameraButtonClicked
@@ -37,6 +39,11 @@ class ProfileViewModel() : ViewModel() {
 
     private var _missingData = MutableStateFlow(false)
     val missingData:StateFlow<Boolean>  = _missingData
+
+    private var _waitingForReply = MutableStateFlow(false)
+    val waitingForReply:StateFlow<Boolean>  = _waitingForReply
+
+
     init {
 
         _fileName.value = ""
@@ -47,11 +54,15 @@ class ProfileViewModel() : ViewModel() {
     fun setAddButtonClicked(bool: Boolean) {
         _addButtonClicked.value = bool
     }
+
+    fun setWaitingForReply(bool: Boolean) {
+        _waitingForReply.value = bool
+    }
     fun setMissingData(bool: Boolean) {
         _missingData.value = bool
     }
-    fun setCameraButtonClicked(bool: Boolean) {
 
+    fun setCameraButtonClicked(bool: Boolean) {
         _cameraButtonClicked.value = bool
 
     }
@@ -77,7 +88,7 @@ class ProfileViewModel() : ViewModel() {
     }
 
     fun uploadPicture() {
-
+        setWaitingForReply(true)
         viewModelScope.launch {
 
             if (imageBitmap.value != null && _fileName.value != "") {
@@ -101,6 +112,7 @@ class ProfileViewModel() : ViewModel() {
             else{
                 setMissingData(true)
             }
+            setWaitingForReply(false)
         }
     }
 
