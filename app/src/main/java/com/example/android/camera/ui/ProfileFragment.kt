@@ -163,11 +163,11 @@ class ProfileFragment : Fragment() {
         lifecycleScope.launch {
             viewModel.waitingForReply.collect { success ->
                 if (success) {
-                    binding.button3.setEnabled(false)
+                    binding.submitButton.setEnabled(false)
 
                 }
                 else
-                    binding.button3.setEnabled(true)
+                    binding.submitButton.setEnabled(true)
             }
         }
     }
