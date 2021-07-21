@@ -9,7 +9,7 @@ import com.example.android.camera.R
 import com.example.android.camera.databinding.DialogOptionsBinding
 import com.google.android.material.snackbar.Snackbar
 
-object DialogManager {
+object DialogAndSnackManager {
     private lateinit var dialog: Dialog
     private  var snack : Snackbar? = null
     private var snackbarDismissed = false

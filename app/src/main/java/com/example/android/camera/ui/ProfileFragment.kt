@@ -40,11 +40,11 @@ class ProfileFragment : Fragment() {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         binding.profileViewModel = viewModel
         binding.lifecycleOwner = this.viewLifecycleOwner
-        DialogManager.setDialogBinding(requireContext(), viewModel)
+        DialogAndSnackManager.setDialogBinding(requireContext(), viewModel)
         setObservers()
 
-        if(DialogManager.isSnackBarDismissed())
-            DialogManager.showSnackBar()
+        if(DialogAndSnackManager.isSnackBarDismissed())
+            DialogAndSnackManager.showSnackBar()
 
 
 
@@ -72,7 +72,7 @@ class ProfileFragment : Fragment() {
         lifecycleScope.launch {
             viewModel.addButtonClicked.collect { clicked ->
                 if (clicked == true && activity != null) {
-                    DialogManager.showDialog()
+                    DialogAndSnackManager.showDialog()
                     viewModel.setAddButtonClicked(false)
                 }
             }
@@ -89,7 +89,7 @@ class ProfileFragment : Fragment() {
 
                     try {
                         startActivityForResult(takePictureIntent, IMAGE_FROM_CAMERA_REQUEST)
-                        DialogManager.dismissDialog()
+                        DialogAndSnackManager.dismissDialog()
                     } catch (e: ActivityNotFoundException) {
                         // display error state to the user
                     }
@@ -110,7 +110,7 @@ class ProfileFragment : Fragment() {
                             pickPictureIntent,
                             IMAGE_FROM_GALLERY_REQUEST
                         )
-                        DialogManager.dismissDialog()
+                        DialogAndSnackManager.dismissDialog()
 
                     } catch (e: ActivityNotFoundException) {
 
@@ -140,8 +140,8 @@ class ProfileFragment : Fragment() {
         lifecycleScope.launch {
             viewModel.uploadFail.collect { success ->
                 if (success) {
-                    DialogManager.createSnackBar(fragment.requireView(), R.string.fail,viewModel)
-                    DialogManager.showSnackBar()
+                    DialogAndSnackManager.createSnackBar(fragment.requireView(), R.string.fail,viewModel)
+                    DialogAndSnackManager.showSnackBar()
                     viewModel.setUploadFail(false)
                 }
 
@@ -175,8 +175,8 @@ class ProfileFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        if(DialogManager.isSncakBarShown()) {
-            DialogManager.dismissSncakBar()
+        if(DialogAndSnackManager.isSncakBarShown()) {
+            DialogAndSnackManager.dismissSncakBar()
         }
 
     }
