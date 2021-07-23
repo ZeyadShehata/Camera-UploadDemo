@@ -16,6 +16,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.android.camera.R
 import com.example.android.camera.databinding.FragmentProfileBinding
+import com.example.android.camera.utils.DialogAndSnackManager
 import com.example.android.camera.utils.IMAGE_FROM_CAMERA_REQUEST
 import com.example.android.camera.utils.IMAGE_FROM_GALLERY_REQUEST
 import kotlinx.coroutines.flow.collect

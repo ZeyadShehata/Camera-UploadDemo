@@ -1,4 +1,4 @@
-package com.example.android.camera.ui
+package com.example.android.camera.utils
 
 import android.app.Dialog
 import android.content.Context
@@ -7,6 +7,8 @@ import android.view.View
 import android.view.Window
 import com.example.android.camera.R
 import com.example.android.camera.databinding.DialogOptionsBinding
+import com.example.android.camera.ui.MyUndoListener
+import com.example.android.camera.ui.ProfileViewModel
 import com.google.android.material.snackbar.Snackbar
 
 object DialogAndSnackManager {
@@ -29,7 +31,7 @@ object DialogAndSnackManager {
     fun dismissDialog(){
         dialog.dismiss()
     }
-    fun createSnackBar(v: View, s: Int, vm:ProfileViewModel){
+    fun createSnackBar(v: View, s: Int, vm: ProfileViewModel){
         snack =
             Snackbar.make(
                 v,
@@ -49,7 +51,7 @@ object DialogAndSnackManager {
         snackbarDismissed = true
     }
     fun isSnackBarDismissed(): Boolean {
-        if(snackbarDismissed && snack!= null)
+        if(snackbarDismissed && snack != null)
             return true
         else
             return false
