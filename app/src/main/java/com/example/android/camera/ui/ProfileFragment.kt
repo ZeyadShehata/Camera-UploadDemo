@@ -35,7 +35,7 @@ class ProfileFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
 
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
@@ -141,6 +141,7 @@ class ProfileFragment : Fragment() {
                             R.string.fail,
                             Snackbar.LENGTH_LONG
                         )
+                    //optimize(ZS): use lambda here instead of [MyUndoListener(viewModel)]
                     snack.setAction(R.string.retry, MyUndoListener(viewModel))
 
                     snack.show()
@@ -170,7 +171,8 @@ class ProfileFragment : Fragment() {
     }
 }
 
-class MyUndoListener(val viewModel: ProfileViewModel) : View.OnClickListener {
+//Optimize(ZS): remove this class and use lambda
+class MyUndoListener(private val viewModel: ProfileViewModel) : View.OnClickListener {
 
     override fun onClick(v: View) {
         viewModel.uploadPicture()

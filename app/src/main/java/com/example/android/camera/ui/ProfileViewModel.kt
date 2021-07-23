@@ -31,6 +31,7 @@ class ProfileViewModel() : ViewModel() {
     private var _galleryButtonClicked = MutableStateFlow(false)
     val galleryButtonClicked: StateFlow<Boolean> = _galleryButtonClicked
 
+    //Optimize(ZS): No need for [_uploadSuccess] and [_uploadFail] just use one stateFlow
     private var _uploadSuccess = MutableStateFlow(false)
     val uploadSuccess: StateFlow<Boolean> = _uploadSuccess
 
