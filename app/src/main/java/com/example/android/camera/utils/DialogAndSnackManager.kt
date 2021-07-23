@@ -7,7 +7,6 @@ import android.view.View
 import android.view.Window
 import com.example.android.camera.R
 import com.example.android.camera.databinding.DialogOptionsBinding
-import com.example.android.camera.ui.MyUndoListener
 import com.example.android.camera.ui.ProfileViewModel
 import com.google.android.material.snackbar.Snackbar
 
@@ -38,7 +37,12 @@ object DialogAndSnackManager {
                 s,
                 Snackbar.LENGTH_LONG
             )
-        snack?.setAction(R.string.retry, MyUndoListener(vm))
+        snack?.setAction(R.string.retry, object: View.OnClickListener {
+            override fun onClick(v: View) {
+                vm.setUploadFail(false)
+                vm.uploadPicture()
+            }
+        })
 
 
     }

@@ -188,10 +188,4 @@ class ProfileFragment : Fragment() {
     }
 }
 
-class MyUndoListener(val viewModel: ProfileViewModel) : View.OnClickListener {
 
-    override fun onClick(v: View) {
-        viewModel.setUploadFail(false)
-        viewModel.uploadPicture()
-    }
-}
