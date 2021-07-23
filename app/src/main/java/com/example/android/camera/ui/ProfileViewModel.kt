@@ -11,14 +11,14 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 
-class ProfileViewModel() : ViewModel() {
+class ProfileViewModel : ViewModel() {
     private val repo = FileUploadRepo()
 
     private var _imageBitmap = MutableLiveData<Bitmap>()
     val imageBitmap: LiveData<Bitmap>
         get() = _imageBitmap
 
-    val _fileName = MutableStateFlow("")
+    private val _fileName = MutableStateFlow("")
     val fileName: StateFlow<String> = _fileName
 
 

@@ -35,7 +35,7 @@ class ProfileFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
 
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
@@ -44,7 +44,7 @@ class ProfileFragment : Fragment() {
         DialogAndSnackManager.setDialogBinding(requireContext(), viewModel)
         setObservers()
 
-        if(DialogAndSnackManager.isSnackBarDismissed())
+        if (DialogAndSnackManager.isSnackBarDismissed())
             DialogAndSnackManager.showSnackBar()
 
 
@@ -72,16 +72,12 @@ class ProfileFragment : Fragment() {
     private fun setObservers() {
         lifecycleScope.launch {
             viewModel.addButtonClicked.collect { clicked ->
-                if (clicked == true && activity != null) {
+                if (clicked && activity != null) {
                     DialogAndSnackManager.showDialog()
                     viewModel.setAddButtonClicked(false)
                 }
             }
         }
-
-
-
-
         lifecycleScope.launch {
             viewModel.cameraButtonClicked.collect { cam ->
                 if (cam) {
@@ -99,7 +95,6 @@ class ProfileFragment : Fragment() {
             }
 
         }
-
         lifecycleScope.launch {
             viewModel.galleryButtonClicked.collect { gallery ->
                 if (gallery) {
@@ -121,9 +116,6 @@ class ProfileFragment : Fragment() {
                 }
             }
         }
-
-
-
         lifecycleScope.launch {
             viewModel.uploadSuccess.collect { success ->
                 if (success) {
@@ -141,7 +133,11 @@ class ProfileFragment : Fragment() {
         lifecycleScope.launch {
             viewModel.uploadFail.collect { success ->
                 if (success) {
-                    DialogAndSnackManager.createSnackBar(fragment.requireView(), R.string.fail,viewModel)
+                    DialogAndSnackManager.createSnackBar(
+                        fragment.requireView(),
+                        R.string.fail,
+                        viewModel
+                    )
                     DialogAndSnackManager.showSnackBar()
                     viewModel.setUploadFail(false)
                 }
@@ -163,12 +159,7 @@ class ProfileFragment : Fragment() {
         }
         lifecycleScope.launch {
             viewModel.waitingForReply.collect { success ->
-                if (success) {
-                    binding.submitButton.setEnabled(false)
-
-                }
-                else
-                    binding.submitButton.setEnabled(true)
+                binding.submitButton.isEnabled = !success
             }
         }
     }
@@ -176,16 +167,13 @@ class ProfileFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        if(DialogAndSnackManager.isSncakBarShown()) {
+        if (DialogAndSnackManager.isSncakBarShown()) {
             DialogAndSnackManager.dismissSncakBar()
         }
 
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
 
-    }
 }
 
 

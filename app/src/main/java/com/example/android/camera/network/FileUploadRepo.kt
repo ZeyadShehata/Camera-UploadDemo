@@ -18,10 +18,7 @@ class FileUploadRepo {
                 bitmapdata.toRequestBody("image/*".toMediaType())
 
             )
-            if (result.isSuccessful) {
-                return true
-            } else
-                return false
+            return result.isSuccessful
 
         } catch(e: Exception){
             return false

@@ -37,12 +37,10 @@ object DialogAndSnackManager {
                 s,
                 Snackbar.LENGTH_LONG
             )
-        snack?.setAction(R.string.retry, object: View.OnClickListener {
-            override fun onClick(v: View) {
-                vm.setUploadFail(false)
-                vm.uploadPicture()
-            }
-        })
+        snack?.setAction(R.string.retry) {
+            vm.setUploadFail(false)
+            vm.uploadPicture()
+        }
 
 
     }
@@ -55,17 +53,11 @@ object DialogAndSnackManager {
         snackbarDismissed = true
     }
     fun isSnackBarDismissed(): Boolean {
-        if(snackbarDismissed && snack != null)
-            return true
-        else
-            return false
+        return snackbarDismissed && snack != null
     }
     fun isSncakBarShown(): Boolean {
         if(snack != null){
-            if(snack?.isShown == true)
-                return true
-            else
-                return false
+            return snack?.isShown == true
         }
         return false
     }
