@@ -4,4 +4,6 @@
     <string name="camera">Capture</string>
     <string name="source">Upload Image From:</string>
     <string name="submit">submit</string>
+    <string name="fail">Upload Failed</string>
+    <string name="retry">Retry Upload</string>
 </resources>

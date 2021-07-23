@@ -1,91 +1,60 @@
 package com.example.android.camera.ui
 
-import android.app.Dialog
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
-import androidx.annotation.RequiresApi
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.example.android.camera.R
-import com.example.android.camera.databinding.DialogOptionsBinding
 import com.example.android.camera.databinding.FragmentProfileBinding
+import com.example.android.camera.utils.IMAGE_FROM_CAMERA_REQUEST
+import com.example.android.camera.utils.IMAGE_FROM_GALLERY_REQUEST
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+
 
 class ProfileFragment : Fragment() {
     private var _binding: FragmentProfileBinding? = null
     private val viewModel: ProfileViewModel by viewModels()
-     lateinit var dialog: Dialog
+
     private val binding
         get() = _binding!!
 
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentProfileBinding.inflate(inflater, container, false)
+    ): View {
 
+
+        _binding = FragmentProfileBinding.inflate(inflater, container, false)
         binding.profileViewModel = viewModel
         binding.lifecycleOwner = this.viewLifecycleOwner
-        //inquiry(Zek): remove this and set the default image using app:srcCompat in the xml
-        val drawablePic = requireContext().getDrawable(R.drawable.ic_baseline_account_circle_24)
-        if (drawablePic != null) {
-            if (viewModel.imageBitmap.value == null)
-                viewModel.setOgBmap(drawablePic.toBitmap())
-        }
-        //optimize(Zek): refactor (extract the below region to a function)
-        //region refactor extract this to a function that creates a dialog or move it into a dialog manager singleton
-        dialog = Dialog(requireContext())
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        val dialogBinding =
-            DialogOptionsBinding.inflate(LayoutInflater.from(dialog.context))
+        DialogManager.setDialogBinding(requireContext(), viewModel)
 
-        dialog.setContentView(dialogBinding.root)
-        dialogBinding.profileFragment = this
-        dialogBinding.profileViewModel = viewModel
-        //endregion
-        // optimize(ZEK): refactor the observers; extract them to a method
-        viewModel.addButtonClicked.observe(viewLifecycleOwner, { clicked ->
-            if (clicked) {
-
-                //optimize(ZEK): use requireActivity()
-                if (getActivity() != null) {
-                    if(isAdded) {
-                        Log.d("sss","acttttt")
-                        dialog.show()
-                    }
-                    // if fragment use getActivity().isFinishing() or isAdded() method
-                }
-
-            }
-        })
 
         return binding.root
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        Log.d("sss", "resultCode.toString()")
-        if (resultCode == AppCompatActivity.RESULT_OK && data != null) {
-            //optimize(Zek): change request codes (1 & 2) to a more readable variables (e.g. const val which are readable)
-            if(requestCode == 1) {
-                Log.d("sss", resultCode.toString())
-                Log.d("sss", AppCompatActivity.RESULT_OK.toString())
-                val inputStream = requireContext().contentResolver.openInputStream(data.data!!)
 
+        if (resultCode == AppCompatActivity.RESULT_OK && data != null) {
+            if (requestCode == IMAGE_FROM_GALLERY_REQUEST) {
+                val inputStream = requireContext().contentResolver.openInputStream(data.data!!)
                 val imageBitmap = BitmapFactory.decodeStream(inputStream)
                 viewModel.setImageBmap(imageBitmap)
-            }
-            else if (requestCode == 2){
+            } else if (requestCode == IMAGE_FROM_CAMERA_REQUEST) {
                 val imageBitmap = data.extras?.get("data") as Bitmap
                 viewModel.setImageBmap(imageBitmap)
             }
@@ -94,8 +63,118 @@ class ProfileFragment : Fragment() {
     }
 
 
+    private fun setObservers() {
+        lifecycleScope.launch {
+            viewModel.addButtonClicked.collect { clicked ->
+                if (clicked == true && activity != null) {
+                    DialogManager.showDialog()
+                    viewModel.setAddButtonClicked(false)
+                }
+            }
+        }
+
+
+
+
+        lifecycleScope.launch {
+            viewModel.cameraButtonClicked.collect { cam ->
+                if (cam) {
+
+                    val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+
+                    try {
+                        startActivityForResult(takePictureIntent, IMAGE_FROM_CAMERA_REQUEST)
+                        DialogManager.dismissDialog()
+                    } catch (e: ActivityNotFoundException) {
+                        // display error state to the user
+                    }
+                    viewModel.setCameraButtonClicked(false)
+                }
+            }
+
+        }
+
+        lifecycleScope.launch {
+            viewModel.galleryButtonClicked.collect { gallery ->
+                if (gallery) {
+
+                    val pickPictureIntent = Intent(Intent.ACTION_PICK)
+                    pickPictureIntent.type = "image/*"
+                    try {
+                        startActivityForResult(
+                            pickPictureIntent,
+                            IMAGE_FROM_GALLERY_REQUEST
+                        )
+                        DialogManager.dismissDialog()
+
+                    } catch (e: ActivityNotFoundException) {
+
+
+                    }
+                    viewModel.setGalleryButtonClicked(false)
+                }
+            }
+        }
+
+
+
+        lifecycleScope.launch {
+            viewModel.uploadSuccess.collect { success ->
+                if (success) {
+                    Toast.makeText(
+                        activity,
+                        "Upload was successful",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                }
+
+            }
+        }
+        val parentFragment = this
+        lifecycleScope.launch {
+            viewModel.uploadFail.collect { success ->
+                if (success) {
+                    val snack =
+                        Snackbar.make(
+                            parentFragment.requireView(),
+                            R.string.fail,
+                            Snackbar.LENGTH_LONG
+                        )
+                    //optimize(ZS): use lambda here instead of [MyUndoListener(viewModel)]
+                    snack.setAction(R.string.retry, MyUndoListener(viewModel))
+
+                    snack.show()
+                }
+
+            }
+        }
+        lifecycleScope.launch {
+            viewModel.missingData.collect { success ->
+                if (success) {
+                    Toast.makeText(
+                        activity,
+                        "Missing File name or Image!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    viewModel.setMissingData(false)
+                }
+
+            }
+        }
+    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setObservers()
+    }
+}
+
+//Optimize(ZS): remove this class and use lambda
+class MyUndoListener(private val viewModel: ProfileViewModel) : View.OnClickListener {
+
+    override fun onClick(v: View) {
+        viewModel.uploadPicture()
     }
 }
