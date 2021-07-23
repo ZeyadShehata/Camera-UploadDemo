@@ -12,7 +12,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.android.camera.R
 import com.example.android.camera.databinding.FragmentProfileBinding
@@ -21,12 +20,12 @@ import com.example.android.camera.utils.IMAGE_FROM_CAMERA_REQUEST
 import com.example.android.camera.utils.IMAGE_FROM_GALLERY_REQUEST
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class ProfileFragment : Fragment() {
     private var _binding: FragmentProfileBinding? = null
-    private val viewModel: ProfileViewModel by viewModels()
-
+    private val viewModel: ProfileViewModel by viewModel()
     private val binding
         get() = _binding!!
 
@@ -70,14 +69,14 @@ class ProfileFragment : Fragment() {
 
 
     private fun setObservers() {
-        lifecycleScope.launch {
+        /*lifecycleScope.launch {
             viewModel.addButtonClicked.collect { clicked ->
                 if (clicked && activity != null) {
                     DialogAndSnackManager.showDialog()
                     viewModel.setAddButtonClicked(false)
                 }
             }
-        }
+        }*/
         lifecycleScope.launch {
             viewModel.cameraButtonClicked.collect { cam ->
                 if (cam) {
@@ -95,27 +94,27 @@ class ProfileFragment : Fragment() {
             }
 
         }
-        lifecycleScope.launch {
-            viewModel.galleryButtonClicked.collect { gallery ->
-                if (gallery) {
-
-                    val pickPictureIntent = Intent(Intent.ACTION_PICK)
-                    pickPictureIntent.type = "image/*"
-                    try {
-                        startActivityForResult(
-                            pickPictureIntent,
-                            IMAGE_FROM_GALLERY_REQUEST
-                        )
-                        DialogAndSnackManager.dismissDialog()
-
-                    } catch (e: ActivityNotFoundException) {
-
-
-                    }
-                    viewModel.setGalleryButtonClicked(false)
-                }
-            }
-        }
+//        lifecycleScope.launch {
+//            viewModel.galleryButtonClicked.collect { gallery ->
+//                if (gallery) {
+//
+//                    val pickPictureIntent = Intent(Intent.ACTION_PICK)
+//                    pickPictureIntent.type = "image/*"
+//                    try {
+//                        startActivityForResult(
+//                            pickPictureIntent,
+//                            IMAGE_FROM_GALLERY_REQUEST
+//                        )
+//                        DialogAndSnackManager.dismissDialog()
+//
+//                    } catch (e: ActivityNotFoundException) {
+//
+//
+//                    }
+//                    viewModel.setGalleryButtonClicked(false)
+//                }
+//            }
+//        }
         lifecycleScope.launch {
             viewModel.uploadSuccess.collect { success ->
                 if (success) {

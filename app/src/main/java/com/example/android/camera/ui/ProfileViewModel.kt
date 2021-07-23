@@ -6,13 +6,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.android.camera.network.FileUploadRepo
+import com.example.android.camera.utils.CoroutineContextProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 
-class ProfileViewModel : ViewModel() {
-    private val repo = FileUploadRepo()
+class ProfileViewModel(private val repo: FileUploadRepo, dispatcher: CoroutineContextProvider) :
+    ViewModel() {
+    // private val repo = FileUploadRepo()
 
     private var _imageBitmap = MutableLiveData<Bitmap>()
     val imageBitmap: LiveData<Bitmap>
@@ -22,33 +24,33 @@ class ProfileViewModel : ViewModel() {
     val fileName: StateFlow<String> = _fileName
 
 
-    private var _addButtonClicked = MutableStateFlow(false)
-    val addButtonClicked: StateFlow<Boolean> = _addButtonClicked
+    private var _addButtonClicked = MutableLiveData<Boolean>()
+    val addButtonClicked: LiveData<Boolean> = _addButtonClicked
 
     private var _cameraButtonClicked = MutableStateFlow(false)
     val cameraButtonClicked: StateFlow<Boolean> = _cameraButtonClicked
 
-    private var _galleryButtonClicked = MutableStateFlow(false)
-    val galleryButtonClicked: StateFlow<Boolean> = _galleryButtonClicked
+    private var _galleryButtonClicked = MutableLiveData<Boolean>()
+    val galleryButtonClicked: LiveData<Boolean> = _galleryButtonClicked
 
     private var _uploadSuccess = MutableStateFlow(false)
     val uploadSuccess: StateFlow<Boolean> = _uploadSuccess
 
     private var _uploadFail = MutableStateFlow(false)
-    val uploadFail:StateFlow<Boolean>  = _uploadFail
+    val uploadFail: StateFlow<Boolean> = _uploadFail
 
     private var _missingData = MutableStateFlow(false)
-    val missingData:StateFlow<Boolean>  = _missingData
+    val missingData: StateFlow<Boolean> = _missingData
 
     private var _waitingForReply = MutableStateFlow(false)
-    val waitingForReply:StateFlow<Boolean>  = _waitingForReply
+    val waitingForReply: StateFlow<Boolean> = _waitingForReply
 
 
     init {
 
         _fileName.value = ""
 
-        }
+    }
 
 
     fun setAddButtonClicked(bool: Boolean) {
@@ -58,6 +60,7 @@ class ProfileViewModel : ViewModel() {
     fun setWaitingForReply(bool: Boolean) {
         _waitingForReply.value = bool
     }
+
     fun setMissingData(bool: Boolean) {
         _missingData.value = bool
     }
@@ -97,7 +100,7 @@ class ProfileViewModel : ViewModel() {
                 val bos = ByteArrayOutputStream()
                 imageBitmap.value!!.compress(Bitmap.CompressFormat.PNG, 90, bos)
                 val bitmapdata = bos.toByteArray()
-                val result = repo.getPhoto(fileName.value,bitmapdata)
+                val result = repo.getPhoto(fileName.value, bitmapdata)
 
                 if (result) {
                     setUploadFail(false)
@@ -108,8 +111,7 @@ class ProfileViewModel : ViewModel() {
                 }
 
 
-            }
-            else{
+            } else {
                 setMissingData(true)
             }
             setWaitingForReply(false)

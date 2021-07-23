@@ -3,11 +3,11 @@ package com.example.android.camera.network
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 
-class FileUploadRepo {
+open class FileUploadRepo(private val fileapi: FileUploadApi) {
 
-    suspend fun getPhoto(fileName: String, bitmapdata: ByteArray): Boolean {
+    open suspend fun getPhoto(fileName: String, bitmapdata: ByteArray): Boolean {
         try {
-            val result = FileAPI.retrofitService.uploadPhoto(
+            val result = fileapi.uploadPhoto(
                 "inline",
                 "multipart/form-data",
                 "------7MA4YWxkTrZu0gW",

@@ -12,5 +12,5 @@ private val okHttpClient = OkHttpClient.Builder().addInterceptor(interceptor).bu
 private val retrofit = Retrofit.Builder().addConverterFactory(GsonConverterFactory.create()).baseUrl(FILE_BASE_URL).client(okHttpClient).build()
 
 object FileAPI {
-    val retrofitService: FileUploadService by lazy { retrofit.create(FileUploadService::class.java)}
+    val retrofitService: FileUploadApi by lazy { retrofit.create(FileUploadApi::class.java)}
 }
