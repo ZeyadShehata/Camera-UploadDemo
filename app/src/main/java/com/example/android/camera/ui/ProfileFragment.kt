@@ -12,14 +12,11 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import com.example.android.camera.R
 import com.example.android.camera.databinding.FragmentProfileBinding
 import com.example.android.camera.utils.DialogAndSnackManager
 import com.example.android.camera.utils.IMAGE_FROM_CAMERA_REQUEST
 import com.example.android.camera.utils.IMAGE_FROM_GALLERY_REQUEST
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -69,98 +66,89 @@ class ProfileFragment : Fragment() {
 
 
     private fun setObservers() {
-        /*lifecycleScope.launch {
-            viewModel.addButtonClicked.collect { clicked ->
-                if (clicked && activity != null) {
-                    DialogAndSnackManager.showDialog()
-                    viewModel.setAddButtonClicked(false)
-                }
+
+        viewModel.addButtonClicked.observe(viewLifecycleOwner, { clicked ->
+            if (clicked && activity != null) {
+                DialogAndSnackManager.showDialog()
+                viewModel.setAddButtonClicked(false)
             }
-        }*/
-        lifecycleScope.launch {
-            viewModel.cameraButtonClicked.collect { cam ->
-                if (cam) {
+        })
 
-                    val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        viewModel.cameraButtonClicked.observe(viewLifecycleOwner, { cam ->
+            if (cam) {
 
-                    try {
-                        startActivityForResult(takePictureIntent, IMAGE_FROM_CAMERA_REQUEST)
-                        DialogAndSnackManager.dismissDialog()
-                    } catch (e: ActivityNotFoundException) {
-                        // display error state to the user
-                    }
-                    viewModel.setCameraButtonClicked(false)
+                val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+
+                try {
+                    startActivityForResult(takePictureIntent, IMAGE_FROM_CAMERA_REQUEST)
+                    DialogAndSnackManager.dismissDialog()
+                } catch (e: ActivityNotFoundException) {
+                    // display error state to the user
                 }
+                viewModel.setCameraButtonClicked(false)
             }
+        })
 
-        }
-//        lifecycleScope.launch {
-//            viewModel.galleryButtonClicked.collect { gallery ->
-//                if (gallery) {
-//
-//                    val pickPictureIntent = Intent(Intent.ACTION_PICK)
-//                    pickPictureIntent.type = "image/*"
-//                    try {
-//                        startActivityForResult(
-//                            pickPictureIntent,
-//                            IMAGE_FROM_GALLERY_REQUEST
-//                        )
-//                        DialogAndSnackManager.dismissDialog()
-//
-//                    } catch (e: ActivityNotFoundException) {
-//
-//
-//                    }
-//                    viewModel.setGalleryButtonClicked(false)
-//                }
-//            }
-//        }
-        lifecycleScope.launch {
-            viewModel.uploadSuccess.collect { success ->
-                if (success) {
-                    Toast.makeText(
-                        activity,
-                        "Upload was successful",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    viewModel.setUploadSuccesss(false)
-                }
+        viewModel.galleryButtonClicked.observe(viewLifecycleOwner, { gallery ->
+            if (gallery) {
 
-            }
-        }
-        val fragment = this
-        lifecycleScope.launch {
-            viewModel.uploadFail.collect { success ->
-                if (success) {
-                    DialogAndSnackManager.createSnackBar(
-                        fragment.requireView(),
-                        R.string.fail,
-                        viewModel
+                val pickPictureIntent = Intent(Intent.ACTION_PICK)
+                pickPictureIntent.type = "image/*"
+                try {
+                    startActivityForResult(
+                        pickPictureIntent,
+                        IMAGE_FROM_GALLERY_REQUEST
                     )
-                    DialogAndSnackManager.showSnackBar()
-                    viewModel.setUploadFail(false)
-                }
+                    DialogAndSnackManager.dismissDialog()
 
-            }
-        }
-        lifecycleScope.launch {
-            viewModel.missingData.collect { success ->
-                if (success) {
-                    Toast.makeText(
-                        activity,
-                        "Missing File name or Image!",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    viewModel.setMissingData(false)
-                }
+                } catch (e: ActivityNotFoundException) {
 
+
+                }
+                viewModel.setGalleryButtonClicked(false)
             }
-        }
-        lifecycleScope.launch {
-            viewModel.waitingForReply.collect { success ->
-                binding.submitButton.isEnabled = !success
+        })
+
+        viewModel.uploadSuccess.observe(viewLifecycleOwner, { success ->
+            if (success) {
+                Toast.makeText(
+                    activity,
+                    "Upload was successful",
+                    Toast.LENGTH_SHORT
+                ).show()
+                viewModel.setUploadSuccesss(false)
             }
-        }
+
+        })
+
+        viewModel.uploadFail.observe(viewLifecycleOwner, { success ->
+            if (success) {
+                DialogAndSnackManager.createSnackBar(
+                    this.requireView(),
+                    R.string.fail,
+                    viewModel
+                )
+                DialogAndSnackManager.showSnackBar()
+                viewModel.setUploadFail(false)
+            }
+
+        })
+
+        viewModel.missingData.observe(viewLifecycleOwner, { success ->
+            if (success) {
+                Toast.makeText(
+                    activity,
+                    "Missing File name or Image!",
+                    Toast.LENGTH_SHORT
+                ).show()
+                viewModel.setMissingData(false)
+            }
+
+        })
+
+        viewModel.waitingForReply.observe(viewLifecycleOwner, { success ->
+            binding.submitButton.isEnabled = !success
+        })
     }
 
 
